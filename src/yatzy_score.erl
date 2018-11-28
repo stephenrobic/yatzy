@@ -24,8 +24,8 @@ calc(three_of_a_kind, Roll) ->
 calc(four_of_a_kind, Roll) ->
     four_of_a_kind(lists:sort(Roll));
 
-calc(yahtzee, Roll) ->
-    yahtzee(lists:sort(Roll));
+calc(yatzy, Roll) ->
+    yatzy(lists:sort(Roll));
 
 calc(full_house, Roll) ->
     full_house(lists:sort(Roll));
@@ -36,14 +36,11 @@ calc(small_straight, Roll) ->
 calc(large_straight, Roll) ->
     large_straight(lists:sort(Roll));
 
-calc(pair, Roll) ->
-    pair(lists:sort(Roll));
+calc(one_pair, Roll) ->
+    one_pair(lists:sort(Roll));
 
-calc(two_pair, Roll) ->
-    two_pair(lists:sort(Roll));
-
-calc(yahtzee_bonus, Roll) ->
-    0.
+calc(two_pairs, Roll) ->
+    two_pairs(lists:sort(Roll)).
 
 helper(Roll, Number) -> 
     lists:sum(lists:filter(fun(X) -> X =:= Number end, Roll)).
@@ -71,9 +68,9 @@ full_house([A,A,A,B,B]) when A /= B->
 full_house(_) ->
     0.
 
-yahtzee([A,A,A,A,A]) ->
-    5 * A;
-yahtzee(_) ->
+yatzy([A,A,A,A,A]) ->
+    50;
+yatzy(_) ->
     0.
 
 small_straight([1, 2, 3, 4, 5]) ->
@@ -86,32 +83,23 @@ large_straight([2, 3, 4, 5, 6]) ->
 large_straight(_) ->
     0.
 
-two_pair([A, A, B, B, _]) when A /= B->
+two_pairs([A, A, B, B, _]) when A /= B->
     2 * A + 2 * B;
-two_pair([A, A, _, B, B]) when A /= B->
+two_pairs([A, A, _, B, B]) when A /= B->
     2 * A + 2 * B;
-two_pair([A, A, B, B, _]) when A /= B->
-    2 * A + 2 * B.
+two_pairs([_, A, A, B, B]) when A /= B->
+    2 * A + 2 * B;
+two_pairs(_) ->
+    0.
 
-pair([A, A, _, _, _]) ->
+one_pair([_, _, A, A, _]) ->
     2 * A;
-pair([_, A, A, _, _]) ->
+one_pair([_, _, _, A, A]) ->
     2 * A;
-pair([_, _, A, A, _]) ->
+one_pair([A, A, _, _, _]) ->
     2 * A;
-pair([_, _, _, A, A]) ->
-    2 * A.
-
-
-
-
-
-
-%ones([X|Xs]) ->
-%    case X == 1 of
-%        true ->
-%            [X| ones(Xs)];
-%         _ ->
-%            ones(Xs)
-%    end
+one_pair([_, A, A, _, _]) ->
+    2 * A;
+one_pair(_) ->
+    0.
 
