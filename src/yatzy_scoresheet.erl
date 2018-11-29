@@ -13,7 +13,7 @@
 -spec total(t()) -> non_neg_integer().
 
 new() -> 
-    maps:new().
+    maps:new(). %or #{}
 
 fill(Slot, Roll, Sheet) ->
     case is_valid_slot(Slot) of
