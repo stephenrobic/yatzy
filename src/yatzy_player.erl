@@ -12,7 +12,6 @@ new(Name) ->
     Pid = spawn(fun() ->
         loop(Sheet) 
         end),
-    register(Name, Pid),
     {ok, Pid}.
     
 fill(Name, Slot, Roll) ->
@@ -37,7 +36,7 @@ loop(Sheet) ->
     receive
        {From, {fill, Slot, Roll}} ->
             case yatzy_scoresheet:fill(Slot, Roll, Sheet) of
-                {'ok', NewSheet} ->
+                {ok, NewSheet} ->
                     {filled, Score} = yatzy_scoresheet:get(Slot, NewSheet),
                     From ! {filled, Score},
                     loop(NewSheet);

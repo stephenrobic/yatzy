@@ -1,6 +1,6 @@
 -module(yatzy_turn).
 
--export([start/0, roll/2, dice/1, stop/1]).
+-export([start/0, roll/2, rolls_left/1, dice/1, stop/1]).
 
 -spec start() -> {'ok', TurnPid::pid()}.
 -spec roll(TurnPid::pid(), Keep::[1..6]) -> {'ok', yatzy:roll()} | 'invalid_keepers' | 'finished'.
@@ -32,6 +32,7 @@ dice(TurnPid) ->
         Dice ->
             Dice
     end.
+
 rolls_left(TurnPid) -> 
     TurnPid ! {self(), rolls_left},
     receive
@@ -46,12 +47,12 @@ stop(TurnPid) ->
             Stop
     end.
 
-first_roll(Roll) -> %loop 
+first_roll(Roll) ->
     receive
         {From, {roll, Keep}} ->
             case valid_keepers(Keep, Roll) of 
                 true ->
-                    NewRoll = Keep ++ dice_roll(5 - lists:length(Keep)),
+                    NewRoll = Keep ++ dice_roll(5 - length(Keep)),
                     From ! {ok, NewRoll},
                     second_roll(NewRoll);
                 false ->
@@ -74,7 +75,7 @@ second_roll(Roll) ->
         {From, {roll, Keep}} ->
             case valid_keepers(Keep, Roll) of
                 true ->
-                    NewRoll = Keep ++ dice_roll(5 - lists:length(Keep)),
+                    NewRoll = Keep ++ dice_roll(5 - length(Keep)),
                     From ! {ok, NewRoll},
                     finished(NewRoll);
                 false ->
@@ -94,7 +95,7 @@ second_roll(Roll) ->
 
 finished(Roll) ->
     receive
-        {From, {roll, Keep}} ->
+        {From, {roll}} ->
             From ! finished,
             finished(Roll);
         {From, dice} ->
