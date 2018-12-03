@@ -95,7 +95,7 @@ second_roll(Roll) ->
 
 finished(Roll) ->
     receive
-        {From, {roll}} ->
+        {From, roll} ->
             From ! finished,
             finished(Roll);
         {From, dice} ->
